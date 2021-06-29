@@ -37,3 +37,16 @@
 (tc/timeline$ :loop
               (tc/wait 1)
               (add-platform (object-named "platforms") (str "pl" (rand))))
+
+(let [scene (object-named "scene")]
+  (hook+ scene :start :init-game #'game.core/init-game))
+
+;;;;
+
+(init-game (object-named "scene") :k)
+(set! (.. stable transform position) (l/v3 -3 0 -8))
+
+(create-player player)
+
+(set! (.. (object-named "camera") transform rotation) (l/qt 0.2 0 0 1))
+(set! (.. (object-named "camera") transform position) (l/v3 0 2 -12))
