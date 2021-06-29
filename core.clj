@@ -15,35 +15,30 @@
    #(child+ o (hc/clone! %))
    [:camera :sun]))
 
-;;
-
-;; (defn platform-update [o k]
-;;   (let [old-pos (.. o transform position)
-;;         velocity (l/v3 0 0 -0.1)]
-;;     (set! (.. o transform position)
-;;           (l/v3+ old-pos velocity))))
-
-(def pl0
-  (let [platform (create-primitive :cube)]
-    (hc/local-scale! platform (l/v3 1 0.1 4))
-    (hc/material-color! platform (hc/color [0 1 0]))
-    platform))
+(defn platform-init-x [o]
+  (let [old-pos (.. o transform position)
+        velocity (l/v3 (+ -1.5 (int (* 4 (rand)))) 0 10)]
+    (set! (.. o transform position)
+          (l/v3+ old-pos velocity))
+    (l/v3+ old-pos velocity)))
 
 (defn add-platform [platforms n]
   (let [platform (create-primitive :cube)
+        pos (platform-init-x platform)
         t (tc/timeline* :loop
-                        (tc/tween {:local {:position (l/v3 0 0 -12)}} platform 2)
+                        (tc/wait 2)
+                        (tc/tween {:local {:position (l/v3+ pos (l/v3 0 0 -22))}} platform 4)
                         (destroy platform))]
     (hc/name! platform n)
-    (hc/local-scale! platform (l/v3 1 0.1 4))
-    (hc/material-color! platform (hc/color [0 1 0]))
+    (hc/local-scale! platform (l/v3 1 0.1 (* 4 (rand))))
+    (hc/material-color! platform (hc/color [(rand) (rand) (rand)]))
     (child+ platforms platform)))
 
-(def tick (atom 100))
+(def tick (atom (int (* 15 (rand)))))
 
 (defn tick-tock [platforms k]
   (when (= @tick 0)
    (add-platform platforms (str "pl" (rand))))
-  (swap! tick #(if-not (= % 0) (dec %) 100)))
+  (swap! tick #(if-not (= % 0) (dec %) (int (* 15 (rand))))))
 
 (hook+ (object-named "platforms") :update :tick-tock #'game.core/tick-tock)

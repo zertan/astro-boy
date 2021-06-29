@@ -26,7 +26,6 @@
 
 (destroy (object-named "Cube"))
 
-
 ;(platform-update (object-named "pl0"))
 (destroy (object-named "pl0"))
 
